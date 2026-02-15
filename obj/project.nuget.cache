@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "v+IzDwh5BEU=",
+  "success": true,
+  "projectFilePath": "/home/chooger/Documents/Projects/VSC Projects/Schedule/Schedule.csproj",
+  "expectedPackageFiles": [
+    "/home/chooger/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.3/microsoft.aspnetcore.app.ref.10.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
