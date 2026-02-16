@@ -22,7 +22,7 @@ public static class Easy
 
         try
             {
-                using (FileStream fs = fi.Create()) {}
+                using (FileStream fs = fi2.Create()) {}
 
                 if (File.Exists(newPath))
                 {
@@ -62,7 +62,7 @@ public static class Easy
             }
 
             //after the last using block, text actually gets saved so we can go to the next using Stream Read to open file, iterate through characters and listing each one
-            using (StreamReader sr = File.OpenText(path))
+             using (StreamReader sr = File.OpenText(path))
             {
                 string s = "";
 

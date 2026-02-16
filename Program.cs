@@ -6,7 +6,7 @@ using System.Collections;
 
 // Declaring path, finding user
 string? user = Environment.UserName;
-string? path = $"/home/{user}/Planner/";
+string? path = $"/home/{user}/txt/";
 
 //Global variables
 bool exit = false;
@@ -45,11 +45,7 @@ while (!exit)
 
     // Declares int, checks if it can be parsed, and if the number is 1 - 5
     int intParse;
-    bool isParsed = int.TryParse(choice, out intParse);
-    bool isValid = intParse >= 1 && intParse <=5 && isParsed;
-
-    // if parsing succeeds and number is 1 - 5, isValid = true
-    if (isValid)
+    if (int.TryParse(choice, out intParse) && intParse >= 1 && intParse <=5)
     { 
         
         switch (intParse)
@@ -59,7 +55,7 @@ while (!exit)
                 Console.Clear();
                 files = [];
                 Console.WriteLine("Listing all files...\n");
-                SearchFiles.Search(files);
+                SearchFiles.Search(files, path);
                 Console.WriteLine("\nPress enter to continue...");
                 Console.ReadLine();
                 Console.Clear();
@@ -83,7 +79,7 @@ while (!exit)
                         {
                             Console.Clear();
                             files = [];
-                            SearchFiles.Search(files);
+                            SearchFiles.Search(files, path);
                             File.Create(fullPath);
                             if (File.Exists(fullPath))
                                 {
@@ -123,32 +119,28 @@ while (!exit)
             case 3:
                 Console.Clear();
                 files = [];
-                SearchFiles.Search(files);
+                SearchFiles.Search(files, path);
                 Console.WriteLine("Please enter the number of the file you want to delete:");
                 choice = Console.ReadLine();
-                isParsed = int.TryParse(choice, out intParse);
-                if (isParsed)
+                if (int.TryParse(choice, out intParse) && (intParse > 0 && intParse <= files.Count))
                  {
-                    if (intParse > 0 && intParse <= files.Count) 
-                    {
-                        Console.Clear();
-                        Console.WriteLine($"You selected to delete {intParse}: {files[intParse-1]}. Continue? Y/N");
-                        string? input = Console.ReadLine(); input = input.Trim().ToLower();
+                    Console.Clear();
+                    Console.WriteLine($"You selected to delete {intParse}: {files[intParse-1]}. Continue? Y/N");
+                    string? input = Console.ReadLine(); input = input.Trim().ToLower();
 
-                        if (input == "y")
-                            {
-                                fullPath = path + files[intParse-1];
-                                Console.WriteLine($"{files[intParse-1]} has been deleted");
-                                File.Delete(fullPath);
-                                Console.ReadLine();
-                            }
-                        else if (input == "n"){Console.WriteLine("Cancelling.");}
+                    if (input == "y")
+                        {
+                            fullPath = path + files[intParse-1];
+                            Console.WriteLine($"{files[intParse-1]} has been deleted");
+                            File.Delete(fullPath);
+                            Console.ReadLine();
+                        }
+                    else if (input == "n"){Console.WriteLine("Cancelling.");}
 
-                        else if (intParse <= 0 || intParse > files.Count)
-                            {
-                                Console.Clear(); Console.WriteLine("Enter a valid number next time...");Console.ReadLine();
-                            }
-                    }
+                    else if (intParse <= 0 || intParse > files.Count)
+                        {
+                            Console.Clear(); Console.WriteLine("Enter a valid number next time...");Console.ReadLine();
+                        }
 
                 }
                 break;
@@ -157,50 +149,41 @@ while (!exit)
             case 4:
                 Console.Clear();
                 files = [];
-                SearchFiles.Search(files);
+                SearchFiles.Search(files, path);
                 Console.WriteLine("Select a file to edit:");
                 choice = Console.ReadLine();
 
-                if (choice != "" || choice != null)
-                {
-                    isParsed = int.TryParse(choice, out intParse);
-                    if (isParsed)
+                    if (int.TryParse(choice, out intParse) && (intParse > 0 && intParse <= files.Count) && (choice != "" || choice != null))
                     {
-                        if (intParse > 0 && intParse <= files.Count)
-                        {
-                            fullPath = path + files[intParse-1];
-                            Console.Clear();
-                            Console.WriteLine($"You selected file:\n{files[intParse-1]}\n\nPlease select an option:\n1. Copy file\n2. Append text to file\n3. Read text of file");
-                            choice = Console.ReadLine();
-                            isParsed = int.TryParse(choice, out intParse);
+                       
+                        fullPath = path + files[intParse-1];
+                        Console.Clear();
+                        Console.WriteLine($"You selected file:\n{files[intParse-1]}\n\nPlease select an option:\n1. Copy file\n2. Append text to file\n3. Read text of file");
+                        choice = Console.ReadLine();
                         
-                            if (isParsed)
+                        if (int.TryParse(choice, out intParse) && (intParse >= 1 || intParse <= files.Count))
+                        {
+                            switch (intParse)
                             {
-                                if (intParse >= 1 || intParse <= files.Count)
-                                {
-                                    switch (intParse)
-                                    {
-                                        // Case for option one in settings menu, copy file to given directory
-                                        case 1:
-                                            Easy.Copy(fullPath);
-                                        break;
+                                // Case for option one in settings menu, copy file to given directory
+                                case 1:
+                                    Easy.Copy(fullPath);
+                                break;
 
-                                        // Case for option 2 in settings menu, adding text
-                                        case 2:
-                                            Easy.AddText(fullPath);
-                                        break;
+                                // Case for option 2 in settings menu, adding text
+                                case 2:
+                                    Easy.AddText(fullPath);
+                                break;
 
-                                        // Case for option 3 of settings menu, read text from file
-                                        case 3:
-                                            Easy.ReadText(fullPath);
-                                        break;
-                                    }
-                                }
+                                // Case for option 3 of settings menu, read text from file
+                                case 3:
+                                    Easy.ReadText(fullPath);
+                                break;
                             }
 
                         }
+
                     }
-                }
                 break;
 
             case 5:

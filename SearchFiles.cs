@@ -2,11 +2,10 @@
 public static class SearchFiles
 {
     
-    public static void Search(List<string> fileSearch)
+    public static void Search(List<string> fileSearch, string path)
     {
         int counter = 1;
         string? user = Environment.UserName;
-        string? path = $"/home/{user}/Planner/";
 
         //Creating a list of files in the directory
         foreach (string file in Directory.EnumerateFiles(path)) 

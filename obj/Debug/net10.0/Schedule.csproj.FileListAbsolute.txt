@@ -12,3 +12,4 @@
 /home/chooger/Documents/Projects/VSC Projects/Schedule/obj/Debug/net10.0/Schedule.pdb
 /home/chooger/Documents/Projects/VSC Projects/Schedule/obj/Debug/net10.0/Schedule.genruntimeconfig.cache
 /home/chooger/Documents/Projects/VSC Projects/Schedule/obj/Debug/net10.0/ref/Schedule.dll
+/home/chooger/Documents/Projects/VSC Projects/Schedule/obj/Debug/net10.0/Schedule.sourcelink.json
