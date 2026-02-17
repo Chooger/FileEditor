@@ -31,7 +31,7 @@ if (!exists)
     }
 
 
-// Do While loop for menu selection
+// While loop for menu selection
 while (!exit)
 {
 
@@ -44,8 +44,7 @@ while (!exit)
     if (choice == null) {Console.WriteLine("Please enter a value 1 - 5...\n1. List all files\n2. Add new files\n3. Delete a file\n4. Select file (options)\n5. Exit");}
 
     // Declares int, checks if it can be parsed, and if the number is 1 - 5
-    int intParse;
-    if (int.TryParse(choice, out intParse) && intParse >= 1 && intParse <=5)
+    if (int.TryParse(choice, out int intParse) && intParse >= 1 && intParse <=5)
     { 
         
         switch (intParse)
