@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "OPLr1KSeiIM=",
+  "dgSpecHash": "Dh6e/vmjsEA=",
   "success": true,
   "projectFilePath": "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/Schedule.csproj",
   "expectedPackageFiles": [
+    "/home/chooger/.nuget/packages/spectre.console/0.54.0/spectre.console.0.54.0.nupkg.sha512",
     "/home/chooger/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.3/microsoft.aspnetcore.app.ref.10.0.3.nupkg.sha512"
   ],
   "logs": []
