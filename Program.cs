@@ -1,168 +1,111 @@
-﻿using System;
-using System.IO; // For reading and writing files/directories.
-using System.Collections;
+﻿using Spectre.Console;
 
-
-
-// Declaring path, finding user
+// Declaring path and finding user
 string? user = Environment.UserName;
-string? path = $"/home/{user}/txt/";
+string? path = $"/home/{user}/fileApp/";
 
-//Global variables
+// Global Variables needed by a lot
 bool exit = false;
-string fullPath;
+string fullPath = "";
 int counter = 1;
 List<string> files = [];
+var message = new Text("Bottom Text");
 
 
+
+// Start of the program;
 Console.Clear();
 
-// Checks if working directory exists
-bool exists = Directory.Exists(path);
-Console.WriteLine($"Directory, {path} exists: {exists}");
+// Checking if directory exists, if not creates one and lets user know
 
-// if directory doesn't exist, creates one and lets user know.
-if (!exists)
-    {
-        Directory.CreateDirectory(path);
-        Console.WriteLine($"Directory needed to to function created at {path}, all files will be in there. Press enter to continue...");
-        Console.ReadLine();
-        Console.Clear();
-    }
+if (!Directory.Exists(path))
+{
+    Directory.CreateDirectory(path);
+    Easy.Print($"Directory created at {path}");
+    Console.ReadLine();
+}
 
-
-// While loop for menu selection
+// While loop for program
 while (!exit)
 {
-
-    // Asks user for input, checks if null, then tryParses the string, and if user enters valid int 1 - 4, then goes into the options loop.
+    // Asks for user input
     Easy.Clear(files);
-    Console.WriteLine("Please select an option: 1-5.\n1. List all Files\n2. Add new file\n3. Delete a file\n4. Select file (options)\n5. Exit");
+    Easy.Print("Please select an option: 1-5.\n1. List all Files\n2. Add new file\n3. Select file (options)\n4. Exit");
     string? choice = Console.ReadLine();
 
-    // Checking if null here, prints on the samme line if so
-    if (choice == null) {Console.WriteLine("Please enter a value 1 - 5...\n1. List all files\n2. Add new files\n3. Delete a file\n4. Select file (options)\n5. Exit");}
-
-    // Declares int, checks if it can be parsed, and if the number is 1 - 5
-    if (int.TryParse(choice, out int intParse) && intParse >= 1 && intParse <=5)
-    { 
+    // After user selects menu option
+    if ((choice != null) && int.TryParse(choice, out int intParse) && intParse >= 1 && intParse <= 4)
+    {
         
-        switch (intParse)
+        // Switch case handeling user selection
+        switch(intParse)
         {
-            // Menu for 1; listing all files. Iterates through Enumerate.Files at $path, saves file name to string, prints string, repeat through iteration
+            // Menu for option 1; list all files
             case 1:
-                Console.Clear();
-                files = [];
-                Console.WriteLine("Listing all files...\n");
-                SearchFiles.Search(files, path);
-                Console.WriteLine("\nPress enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
+            Console.Clear();
+            files = [];
+            Easy.Print("Listing all files...");
+            SearchFiles.Search(files, path);
+            Console.ReadLine();
             break;
 
-            // Menu option for 2; add new file.
+            // Menu option for 2; add new file
             case 2:
-                Console.Clear();
-                Console.WriteLine("Please enter the name of the file: ");
-                choice = Console.ReadLine();
-                if (choice != "")
+            Console.Clear();
+            files = [];
+            SearchFiles.Search(files, path);
+            Easy.Print("Please enter filename...");
+            fullPath = path + Console.ReadLine();
+
+            if (File.Exists(fullPath))
                 {
-                    fullPath = path + choice;
-                    
-                    if (File.Exists(fullPath))
-                    {
-                        Console.WriteLine($"{fullPath} already exists, continue? (Y/N)");
-                        choice = Console.ReadLine(); choice = choice.Trim().ToLower();
+                    Easy.Warn($"File already exists at {fullPath}, continue? Y/N");
+                    choice = Console.ReadLine().ToLower().Trim();
 
-                        if (choice == "y")
-                        {
+                    switch(choice)
+                    {
+                        case "y":
                             Console.Clear();
-                            files = [];
-                            SearchFiles.Search(files, path);
-                            File.Create(fullPath);
-                            if (File.Exists(fullPath))
-                                {
-                                    Console.WriteLine($"File created at:\n{fullPath}");
-                                    Console.ReadLine();   
-                                }
-                            else if (File.Exists(fullPath) == false) {Console.WriteLine("File error, try again later");}
-                        } else
-                        {
-                            Console.Clear();
-                            Console.WriteLine("Cancelling...");
+                            File.Delete(fullPath);
+                            using (File.Create(fullPath)) {};
+                            Easy.Success($"File saved at {fullPath}");
                             Console.ReadLine();
-                        }
-                    }
-                    else if (File.Exists(fullPath) == false)
-                    {
-                        Console.Clear();
-                        File.Create(fullPath);
-
-                        if (File.Exists(fullPath))
-                                {
-                                    Console.WriteLine($"File created at:\n{fullPath}");
-                                    Console.ReadLine();   
-                                }
-                            else if (File.Exists(fullPath) == false) {Console.WriteLine("File error, try again later");}
+                        break;
+                        
+                        case "n":
+                            Console.Clear();
+                            Easy.Warn("Cancelling...");
+                            Console.ReadLine();
+                        break;
                     }
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Invalid filename, cancelling....");
+                    using (File.Create(fullPath)) {};
+                    Easy.Success($"File Created at {fullPath}");
                     Console.ReadLine();
                 }
             break;
 
-            // Menu option for 3, delete a File
+            // Menu option for 3; file options
             case 3:
-                Console.Clear();
-                files = [];
-                SearchFiles.Search(files, path);
-                Console.WriteLine("Please enter the number of the file you want to delete:");
-                choice = Console.ReadLine();
-                if (int.TryParse(choice, out intParse) && (intParse > 0 && intParse <= files.Count))
-                 {
+            Console.Clear();
+            files = [];
+            SearchFiles.Search(files, path);
+            Easy.Print("Select a file to edit:");
+            choice = Console.ReadLine();
+
+            if (int.TryParse(choice, out intParse) && (intParse > 0 && intParse <= files.Count) && (choice != "" && choice != null))
+                {
+                    fullPath = path + files[intParse-1];
                     Console.Clear();
-                    Console.WriteLine($"You selected to delete {intParse}: {files[intParse-1]}. Continue? Y/N");
-                    string? input = Console.ReadLine(); input = input.Trim().ToLower();
+                    Easy.Print($"You selected file: {files[intParse-1]}\n\nPlease select an option:\n1. Copy file\n2. Append text to file\n3. Read text of file\n4. Delete File\n5. Rename file");
+                    choice = Console.ReadLine();
 
-                    if (input == "y")
-                        {
-                            fullPath = path + files[intParse-1];
-                            Console.WriteLine($"{files[intParse-1]} has been deleted");
-                            File.Delete(fullPath);
-                            Console.ReadLine();
-                        }
-                    else if (input == "n"){Console.WriteLine("Cancelling.");}
-
-                    else if (intParse <= 0 || intParse > files.Count)
-                        {
-                            Console.Clear(); Console.WriteLine("Enter a valid number next time...");Console.ReadLine();
-                        }
-
-                }
-                break;
-
-            // Menu option 4, select a file
-            case 4:
-                Console.Clear();
-                files = [];
-                SearchFiles.Search(files, path);
-                Console.WriteLine("Select a file to edit:");
-                choice = Console.ReadLine();
-
-                    if (int.TryParse(choice, out intParse) && (intParse > 0 && intParse <= files.Count) && (choice != "" || choice != null))
+                    if (int.TryParse(choice, out intParse) && (intParse >= 1 || intParse <= 4))
                     {
-                       
-                        fullPath = path + files[intParse-1];
-                        Console.Clear();
-                        Console.WriteLine($"You selected file:\n{files[intParse-1]}\n\nPlease select an option:\n1. Copy file\n2. Append text to file\n3. Read text of file");
-                        choice = Console.ReadLine();
-                        
-                        if (int.TryParse(choice, out intParse) && (intParse >= 1 || intParse <= files.Count))
-                        {
-                            switch (intParse)
+                        switch (intParse)
                             {
                                 // Case for option one in settings menu, copy file to given directory
                                 case 1:
@@ -178,16 +121,26 @@ while (!exit)
                                 case 3:
                                     Easy.ReadText(fullPath);
                                 break;
+
+                                // Case for option 4 of settings menu, delete file
+                                case 4:
+                                    Easy.Delete(fullPath);
+                                break;
+
+                                // Case for option 5 of settings menu, rename a file
+                                case 5:
+                                Easy.Rename(path, fullPath);
+                                break;
                             }
-
-                        }
-
                     }
-                break;
-
-            case 5:
-            Console.Clear();Console.WriteLine("Exiting..."); exit = true;
+                }
             break;
-        }            
+
+            case 4:
+            Console.Clear();
+            Easy.Error("Exiting...");
+            exit = true;
+            break;
+        }
     }
 }

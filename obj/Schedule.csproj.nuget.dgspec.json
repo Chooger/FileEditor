@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/chooger/Documents/Projects/VSC Projects/Schedule/Schedule.csproj": {}
+    "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/Schedule.csproj": {}
   },
   "projects": {
-    "/home/chooger/Documents/Projects/VSC Projects/Schedule/Schedule.csproj": {
+    "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/Schedule.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/chooger/Documents/Projects/VSC Projects/Schedule/Schedule.csproj",
+        "projectUniqueName": "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/Schedule.csproj",
         "projectName": "Schedule",
-        "projectPath": "/home/chooger/Documents/Projects/VSC Projects/Schedule/Schedule.csproj",
+        "projectPath": "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/Schedule.csproj",
         "packagesPath": "/home/chooger/.nuget/packages/",
-        "outputPath": "/home/chooger/Documents/Projects/VSC Projects/Schedule/obj/",
+        "outputPath": "/home/chooger/Documents/Projects/VSC Projects/C#/Schedule/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/chooger/.nuget/NuGet/NuGet.Config"

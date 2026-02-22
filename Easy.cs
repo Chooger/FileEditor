@@ -1,3 +1,5 @@
+using Spectre.Console;
+
 public static class Easy
 {
     public static void Clear(List<string> filePath)
@@ -16,7 +18,7 @@ public static class Easy
     {
         FileInfo fi = new FileInfo(path);
         Console.Clear();
-        Console.WriteLine("Please enter the path and filename you want to copy the file to. (ex: ~/destination/file.txt)");
+        Easy.Print("Please enter the path and filename you want to copy the file to. (ex: ~/destination/file.txt)");
         string newPath = Console.ReadLine();
         FileInfo fi2 = new FileInfo(newPath);
 
@@ -31,11 +33,11 @@ public static class Easy
 
                 fi.CopyTo(newPath);
 
-                Console.WriteLine($"File copied to {newPath}");
+                Easy.Print($"File copied to {newPath}");
                 Console.ReadLine();
             } catch (IOException ioex)
             {
-                Console.WriteLine(ioex.Message);
+                Easy.Print(ioex.Message);
             }
     }
 
@@ -44,40 +46,57 @@ public static class Easy
          if (!File.Exists(path))
             {
                 Console.Clear();
-                Console.WriteLine("Invalid Path");
+                Easy.Error("Invalid Path");
                 Console.ReadLine();
+                return;
             }
 
             Console.Clear();
-            Console.WriteLine("Please enter the text you want to append to file");
-            string addText = Console.ReadLine();
+            Easy.Print("Please enter the text you want to append to file");
+            string? addText = Console.ReadLine();
 
-            //using Stream Writer to append text gotten from user in last output, then promps for full contents
-            using (StreamWriter sw = File.AppendText(path))
+            if (addText == null || addText == "") {return;}
+            
+            using (FileStream writeStream = new FileStream (
+                path,
+                FileMode.Append,
+                FileAccess.Write,
+                FileShare.None))
+
+            using (StreamWriter writer = new StreamWriter(writeStream))
+        {
+            writer.WriteLine(addText);
+            writer.Flush();
+        }
+
+        Console.Clear();
+        Easy.Print("Text added, full contents:");
+
+        using (FileStream readStream = new FileStream(
+            path,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.None))
+        using (StreamReader reader = new StreamReader(readStream))
+        {
+            string? line;
+            while ((line = reader.ReadLine()) != null)
             {
-                sw.WriteLine(addText);
-                Console.Clear();
-                Console.WriteLine("Text added, full contents:\n\n");
-
+                Easy.Print(line);
             }
+        }
 
-            //after the last using block, text actually gets saved so we can go to the next using Stream Read to open file, iterate through characters and listing each one
-             using (StreamReader sr = File.OpenText(path))
-            {
-                string s = "";
-
-                while ((s = sr.ReadLine()) != null)
-                {
-                    Console.WriteLine(s);
-                }
-            }
-            Console.ReadLine();
+        Console.ReadLine();
     }
 
     public static void ReadText(string path)
     {
+        if (new FileInfo(path).Length == 0)
+        {Easy.Error("File empty, nothing to read"); Console.ReadLine();}
+
+        else{
         Console.Clear();
-        Console.WriteLine($"Reading {path}...\n\n");
+        Easy.Print($"Reading {path}...\n");
 
         using (StreamReader sr = File.OpenText(path))
         {
@@ -85,11 +104,77 @@ public static class Easy
 
             while ((s = sr.ReadLine()) != null)
             {
-                Console.WriteLine(s);
+                Easy.Print(s);
             }
             
         }
         Console.WriteLine("\n");
         Console.ReadLine();
+        }
+    }
+
+    public static void Delete(string path)
+    {
+        Console.Clear();
+        File.Delete(path);
+        Easy.Warn($"File Deleted at {path}");
+        Console.ReadLine();
+    }
+
+    public static void Rename (string path, string fullPath)
+    {
+        Console.Clear();
+        Easy.Print("Please enter new name for file:");
+        string input = Console.ReadLine();
+        if (input == null || input == "") {return;}
+        string fullPath2 = path + input;
+        if (File.Exists(fullPath2))
+        {
+            Easy.Print("File exists, continue? Y/N");
+            string result = Console.ReadLine().ToLower();
+
+            if (result == "y")
+            {
+                File.Copy(fullPath, fullPath2);
+                File.Delete(fullPath);
+                Easy.Success("File renamed...");
+                Console.ReadLine();
+            } else {Easy.Error("Something went wrong or you selected no. Cancelling..."); Console.ReadLine();};
+        }
+        else
+        {
+            File.Copy(fullPath, fullPath2);
+            File.Delete(fullPath);
+            Easy.Success("File renamed...");
+            Console.ReadLine();
+        }
+    }
+
+    public static void Print(string input)
+    {
+        var defaultText = new Style(Color.FromHex("#9467DB"));
+        var message = new Text($"{input}\n", defaultText);
+        AnsiConsole.Write(message);
+    }
+
+    public static void Warn(string input)
+    {
+        var warn = new Style(Color.FromHex("#F79E23"), decoration: Decoration.Bold);
+        var message = new Text($"{input}\n", warn);
+        AnsiConsole.Write(message);
+    }
+
+    public static void Success(string input)
+    {
+        var success = new Style(Color.FromHex("#3AF035"), decoration: Decoration.Bold);
+        var message = new Text($"{input}\n", success);
+        AnsiConsole.Write(message);
+    }
+
+    public static void Error(string input)
+    {
+        var error = new Style(Color.FromHex("#ED1818"), decoration: Decoration.Bold);
+        var message = new Text($"{input}\n", error);
+        AnsiConsole.Write(message);
     }
 }

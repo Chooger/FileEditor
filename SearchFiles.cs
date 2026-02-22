@@ -1,9 +1,11 @@
-
+using Spectre.Console;
 public static class SearchFiles
 {
     
     public static void Search(List<string> fileSearch, string path)
     {
+        var message = new Text("");
+        var defaultText = new Style(Color.FromHex("#9467DB"));
         int counter = 1;
         string? user = Environment.UserName;
 
@@ -17,7 +19,8 @@ public static class SearchFiles
 
         for (int i = 0; i < fileSearch.Count; i++)
         {
-            Console.WriteLine($"{counter}: {fileSearch[i]}");
+            message = new Text($"{counter}: {fileSearch[i]}\n", defaultText);
+            AnsiConsole.Write(message);
             counter++;
         } 
         counter = 1;
